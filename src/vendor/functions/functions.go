@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"cfg"
+	"strconv"
 )
 
 
@@ -18,13 +19,24 @@ func Rename(path string) {
         	log.Fatal(err)
     	}
 
+	count := 0
+
+	for _, c := range files {
+		
+		if (filepath.HasPrefix(c.Name(), "V")){	
+			count = count + 1
+		}	
+	}
+
     	for _, f := range files {
 		if filepath.Ext(f.Name()) == ".sql" {
         	fmt.Println(f.Name())
-		os.Rename(path + "/" + f.Name(), path + "/V" + f.ModTime().Format("20060102150405") + "__" + "s.sql")
+		if (!filepath.HasPrefix(f.Name(), "V")){
+			count = count + 1
+			os.Rename(path + "/" + f.Name(), path + "/V" + strconv.Itoa(count) + "__" + ".sql")
+			}
    		 }
     	}
-
 }
 
 
