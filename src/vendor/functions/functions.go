@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"cfg"
 	"strconv"
+	"strings"
 )
 
 
@@ -33,7 +34,7 @@ func Rename(path string) {
         	fmt.Println(f.Name())
 		if (!filepath.HasPrefix(f.Name(), "V")){
 			count = count + 1
-			os.Rename(path + "/" + f.Name(), path + "/V" + strconv.Itoa(count) + "__" + ".sql")
+			os.Rename(path + "/" + f.Name(), path + "/V" + strconv.Itoa(count) + "__" + strings.TrimSuffix(f.Name(), ".sql") + ".sql")
 			}
    		 }
     	}
@@ -98,7 +99,6 @@ func Command3(app,arg0,arg1 string) {
 }
 
 
-
 func RunCommands(){
 
 	mymap := make(map[string]string)
@@ -107,18 +107,17 @@ func RunCommands(){
         	log.Fatal(err)
     	}
 
-
 	path := mymap["path"]
 
 	if (mymap["repository"] == "true"){
-		Command5("git", "-C", path, "add", "-A")
-		Command5("git", "-C", path, "add", "*")
 		Command4("git", "-C", path, "pull")
 	}
 
 	Rename(mymap["path"])
 
 	if (mymap["repository"] == "true"){
+		Command5("git", "-C", path, "add", "-A")
+		Command5("git", "-C", path, "add", "*")
 		Command6("git", "-C", path, "commit", "-m", "New statements")
 	}
 
